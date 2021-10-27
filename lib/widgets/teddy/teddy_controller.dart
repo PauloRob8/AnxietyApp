@@ -75,10 +75,8 @@ class TeddyController extends FlareControls {
   void initialize(FlutterActorArtboard artboard) {
     super.initialize(artboard);
     _faceControl = artboard.getNode("ctrl_face")!;
-    if (_faceControl != null) {
-      _faceControl.getWorldTranslation(_faceOrigin);
-      Vec2D.copy(_faceOriginLocal, _faceControl.translation);
-    }
+    _faceControl.getWorldTranslation(_faceOrigin);
+    Vec2D.copy(_faceOriginLocal, _faceControl.translation);
     play("idle");
   }
 

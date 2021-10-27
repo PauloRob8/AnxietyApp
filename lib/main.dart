@@ -1,5 +1,6 @@
-import 'package:anxiety_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
+
+import 'pages/login_sign_up/login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,6 +32,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) => Material(
-        child: HomePage(),
+        child: LoginPage(),
       );
 }
