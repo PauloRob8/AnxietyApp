@@ -1,6 +1,13 @@
+import 'package:anxiety_app/bloc/login/login_cubit.dart';
+import 'package:anxiety_app/bloc/login/login_state.dart';
+import 'package:anxiety_app/pages/home_page.dart';
+import 'package:anxiety_app/pages/login_sign_up/sign_up_page.dart';
+import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage() : super();
@@ -10,7 +17,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+  LoginCubit get cubit => context.read<LoginCubit>();
+
   String _animationType = 'idle';
+  bool isSignUp = false;
+
+  final _teddyController = TeddyController();
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -37,6 +49,22 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<LoginCubit, LoginState>(
+      listener: _listener,
+      builder: _builder,
+    );
+  }
+
+  void _listener(BuildContext context, LoginState state) {
+    if (state.userdId != null) {
+      _teddyController.play('success');
+      Future.delayed(Duration(seconds: 1)).whenComplete(
+        () => Navigator.of(context).pushReplacement(HomePage.route()),
+      );
+    }
+  }
+
+  Widget _builder(BuildContext context, LoginState state) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.blue[100],
@@ -46,7 +74,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             children: [
               _makeTeddyAnimation(),
               _makeTextFields(),
-              _makeLoginButton(),
+              _makeLoginButton(state),
               _makeSignUpText(),
             ],
           ),
@@ -70,6 +98,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 child: FlareActor(
                   'assets/Teddy.flr',
                   alignment: Alignment.center,
+                  controller: _teddyController,
                   fit: BoxFit.contain,
                   animation: this._animationType,
                   callback: (currentAnimation) {
@@ -127,7 +156,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         ),
       );
 
-  Container _makeLoginButton() => Container(
+  Container _makeLoginButton(LoginState state) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         width: double.infinity,
         child: ElevatedButton(
@@ -137,26 +166,39 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
-          onPressed: () {},
-          child: Text('LOGAR'),
+          onPressed: () => cubit.onLogin(
+            email: _emailController.text,
+            password: _passwordController.text,
+          ),
+          child: state.isLoading
+              ? SpinKitThreeBounce(
+                  size: 25.0,
+                  color: Colors.white,
+                )
+              : Text('LOGAR'),
         ),
       );
 
-  Padding _makeSignUpText() => Padding(
-        padding: const EdgeInsets.only(top: 10.0),
-        child: RichText(
-          text: TextSpan(
-            text: 'Ainda não tem um login ? ',
-            style: TextStyle(color: Colors.blue),
-            children: [
-              TextSpan(
-                text: 'Registre-se agora!',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ],
+  GestureDetector _makeSignUpText() => GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(SignUpPage.route());
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: RichText(
+            text: TextSpan(
+              text: 'Ainda não tem um login ? ',
+              style: TextStyle(color: Colors.blue),
+              children: [
+                TextSpan(
+                  text: 'Registre-se agora!',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       );

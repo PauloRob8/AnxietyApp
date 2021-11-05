@@ -2,7 +2,7 @@ import 'package:anxiety_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  Future<UserModel> loginUser(
+  Future<UserCredential> loginUser(
     String email,
     String password,
   ) async {
@@ -11,10 +11,10 @@ class AuthService {
       password: password,
     );
 
-    return UserModel(user.user!.email, password);
+    return user;
   }
 
-  Future<UserModel> registerUser(
+  Future<UserCredential> registerUser(
     String email,
     String password,
   ) async {
@@ -22,6 +22,6 @@ class AuthService {
       email: email,
       password: password,
     );
-    return UserModel(user.user!.email, password);
+    return user;
   }
 }

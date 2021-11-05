@@ -7,6 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class HomePage extends StatefulWidget {
   const HomePage() : super();
 
+  static PageRoute<dynamic> route() => MaterialPageRoute(
+        builder: (context) => HomePage(),
+      );
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -26,61 +30,63 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.lightBlue,
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          backgroundColor: Colors.blue[50],
-          items: <BottomNavigationBarItem>[
-            buildBottomNavigationBarItem(
-              icon: Icons.history,
-              size: 30,
-              label: "Histórico",
-            ),
-            buildBottomNavigationBarItem(
-              icon: Icons.home,
-              size: 30,
-              label: "Início",
-            ),
-            buildBottomNavigationBarItem(
-              icon: Icons.book,
-              size: 30,
-              label: "Diário",
-            ),
-            buildBottomNavigationBarItem(
-              icon: FontAwesomeIcons.trophy,
-              label: "Conquistas",
-              size: 30,
-            ),
-          ],
-          currentIndex: 0,
-          onTap: null,
-        ),
-        body: Center(
-          child: Stack(
-            children: [
-              GestureDetector(
-                onTap: () => _teddyController.play('success'),
-                child: FlareActor(
-                  'assets/Teddy.flr',
-                  controller: _teddyController,
-                  shouldClip: false,
-                  callback: (name) {
-                    if (name != "fail") {
-                      _teddyController.play("success");
-                    }
-                  },
-                ),
+    return Material(
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.lightBlue,
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
+            backgroundColor: Colors.blue[50],
+            items: <BottomNavigationBarItem>[
+              buildBottomNavigationBarItem(
+                icon: Icons.history,
+                size: 30,
+                label: "Histórico",
               ),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: _dialogCard(),
+              buildBottomNavigationBarItem(
+                icon: Icons.home,
+                size: 30,
+                label: "Início",
+              ),
+              buildBottomNavigationBarItem(
+                icon: Icons.book,
+                size: 30,
+                label: "Diário",
+              ),
+              buildBottomNavigationBarItem(
+                icon: FontAwesomeIcons.trophy,
+                label: "Conquistas",
+                size: 30,
               ),
             ],
+            currentIndex: 0,
+            onTap: null,
+          ),
+          body: Center(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () => _teddyController.play('success'),
+                  child: FlareActor(
+                    'assets/Teddy.flr',
+                    controller: _teddyController,
+                    shouldClip: false,
+                    callback: (name) {
+                      if (name != "fail") {
+                        _teddyController.play("success");
+                      }
+                    },
+                  ),
+                ),
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: _dialogCard(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

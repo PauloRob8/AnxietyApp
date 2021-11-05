@@ -1,21 +1,45 @@
-import 'package:meta/meta.dart';
+enum LoginError {
+  none,
+}
 
-abstract class LoginState {
-  LoginState(
-    this.isLoading,
+class LoginState {
+  LoginState({
+    required this.isLoading,
     this.userdId,
-  );
-
-  final bool? isLoading;
-  final String? userdId;
-}
-
-class LoginInitial extends LoginState {
-  LoginInitial() : super(false, '');
-}
-
-class LoginLoading extends LoginState {
-  LoginLoading(this.isLoading) : super(isLoading, '');
+    required this.errorType,
+  });
 
   final bool isLoading;
+  final String? userdId;
+  final LoginError errorType;
+
+  factory LoginState.initial() => LoginState(
+        isLoading: false,
+        userdId: null,
+        errorType: LoginError.none,
+      );
+
+  factory LoginState.loading() => LoginState(
+        isLoading: true,
+        userdId: null,
+        errorType: LoginError.none,
+      );
+
+  factory LoginState.success({
+    required String userId,
+  }) =>
+      LoginState(
+        isLoading: false,
+        userdId: userId,
+        errorType: LoginError.none,
+      );
+
+  factory LoginState.error({
+    required LoginError errorType,
+  }) =>
+      LoginState(
+        isLoading: false,
+        userdId: null,
+        errorType: errorType,
+      );
 }

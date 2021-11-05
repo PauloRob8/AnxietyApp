@@ -1,24 +1,24 @@
-import 'package:anxiety_app/bloc/login/login_state.dart';
+import 'package:anxiety_app/bloc/sign_up/sign_up_state.dart';
 import 'package:anxiety_app/services/auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit({
+class SignUpCubit extends Cubit<SignUpState> {
+  SignUpCubit({
     AuthService? authService,
   })  : _authService = authService ?? AuthService(),
-        super(LoginState.initial());
+        super(SignUpState.initial());
 
   final AuthService _authService;
 
-  Future<void> onLogin({
+  Future<void> onSignUp({
     required String email,
     required String password,
   }) async {
-    emit(LoginState.loading());
+    emit(SignUpState.loading());
     try {
-      final user = await _authService.loginUser(email, password);
+      final user = await _authService.registerUser(email, password);
 
-      emit(LoginState.success(userId: user.user!.uid));
+      emit(SignUpState.success(userId: user.user!.uid));
     } on Exception catch (error) {
       _onError(error);
     }
