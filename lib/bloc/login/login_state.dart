@@ -1,5 +1,10 @@
 enum LoginError {
   none,
+  emptyEmail,
+  emptyPassword,
+  invalidPassword,
+  invalidEmail,
+  userNotFound,
 }
 
 class LoginState {

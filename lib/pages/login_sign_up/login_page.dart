@@ -12,6 +12,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage() : super();
 
+  static PageRoute<dynamic> route() => MaterialPageRoute(
+        builder: (context) => LoginPage(),
+      );
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -29,6 +33,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   final FocusNode _emailNode = FocusNode();
   final FocusNode _passwordNode = FocusNode();
+
+  String? _emailErrorText;
+  String? _passwordErrorText;
 
   @override
   void initState() {
@@ -58,29 +65,58 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void _listener(BuildContext context, LoginState state) {
     if (state.userdId != null) {
       _teddyController.play('success');
-      Future.delayed(Duration(seconds: 1)).whenComplete(
+      Future.delayed(Duration(seconds: 2)).whenComplete(
         () => Navigator.of(context).pushReplacement(HomePage.route()),
+      );
+    } else if (state.errorType == LoginError.invalidEmail) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(_snackBar('O email informado não está cadastrado!'));
+    } else if (state.errorType == LoginError.invalidPassword) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context).showSnackBar(_snackBar('Senha incorreta!'));
+    } else if (state.errorType == LoginError.userNotFound) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context).showSnackBar(
+        _snackBar('O login informado não está cadastrado!'),
       );
     }
   }
 
   Widget _builder(BuildContext context, LoginState state) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.blue[100],
-        resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _makeTeddyAnimation(),
-              _makeTextFields(),
-              _makeLoginButton(state),
-              _makeSignUpText(),
-            ],
+    _makeErrorTexts(state);
+    return Material(
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.blue[100],
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _makeTeddyAnimation(),
+                _makeTextFields(),
+                _makeLoginButton(state),
+                _makeSignUpText(),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _makeErrorTexts(LoginState state) {
+    if (state.errorType == LoginError.emptyEmail) {
+      _emailErrorText = 'Ops! Parece que você esqueceu de inserir o email';
+    } else {
+      _emailErrorText = null;
+    }
+
+    if (state.errorType == LoginError.emptyPassword) {
+      _passwordErrorText = 'Ops! Parece que você esqueceu de inserir a senha';
+    } else {
+      _passwordErrorText = null;
+    }
   }
 
   Padding _makeTeddyAnimation() => Padding(
@@ -113,45 +149,51 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         ),
       );
 
-  Padding _makeTextFields() => Padding(
-        padding: const EdgeInsets.only(
-          right: 15.0,
-          left: 15.0,
-          bottom: 10.0,
-        ),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: 150.0,
-          decoration: BoxDecoration(
-            color: Colors.blue[50],
-            borderRadius: BorderRadius.circular(25.0),
-            border: Border.all(
-              width: 2.0,
-              color: Colors.white,
-            ),
+  Form _makeTextFields() => Form(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            right: 15.0,
+            left: 15.0,
+            bottom: 10.0,
           ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: 'seu.email@gmail.com'),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  focusNode: _emailNode,
-                ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue[50],
+              borderRadius: BorderRadius.circular(25.0),
+              border: Border.all(
+                width: 2.0,
+                color: Colors.white,
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(hintText: 'senha'),
-                  controller: _passwordController,
-                  focusNode: _passwordNode,
-                  obscureText: true,
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'seu.email@gmail.com',
+                      errorText: _emailErrorText,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    focusNode: _emailNode,
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      hintText: 'senha',
+                      errorText: _passwordErrorText,
+                    ),
+                    controller: _passwordController,
+                    focusNode: _passwordNode,
+                    obscureText: true,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -166,10 +208,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
-          onPressed: () => cubit.onLogin(
-            email: _emailController.text,
-            password: _passwordController.text,
-          ),
+          onPressed: () {
+            _emailNode.unfocus();
+            _passwordNode.unfocus();
+            cubit.valiadeUserCredentials(
+              email: _emailController.text,
+              password: _passwordController.text,
+            );
+          },
           child: state.isLoading
               ? SpinKitThreeBounce(
                   size: 25.0,
@@ -181,7 +227,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   GestureDetector _makeSignUpText() => GestureDetector(
         onTap: () {
-          Navigator.of(context).push(SignUpPage.route());
+          Navigator.of(context).pushReplacement(SignUpPage.route());
         },
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0),
@@ -202,4 +248,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ),
         ),
       );
+
+  SnackBar _snackBar(String message) {
+    return SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+      elevation: 2.0,
+    );
+  }
 }

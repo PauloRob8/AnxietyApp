@@ -1,4 +1,3 @@
-import 'package:anxiety_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {

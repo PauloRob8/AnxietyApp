@@ -1,11 +1,16 @@
 import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:anxiety_app/bloc/sign_up/sign_up_cubit.dart';
 import 'package:anxiety_app/bloc/sign_up/sign_up_state.dart';
+import 'package:anxiety_app/pages/home_page.dart';
+import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage() : super();
@@ -28,6 +33,8 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   String _animationType = 'idle';
 
+  final _teddyController = TeddyController();
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _emailConfirmController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -35,6 +42,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   final FocusNode _emailNode = FocusNode();
   final FocusNode _emailConfirmNode = FocusNode();
   final FocusNode _passwordNode = FocusNode();
+
+  String? _emailErrorText;
+  String? _emailConfirmErrorText;
+  String? _passwordErrorText;
 
   @override
   void initState() {
@@ -61,9 +72,32 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     );
   }
 
-  void _listener(BuildContext context, SignUpState state) {}
+  void _listener(BuildContext context, SignUpState state) {
+    if (state.errorType == SignUpError.emailInUse) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context).showSnackBar(
+        _snackBar('Esse email já está em uso!'),
+      );
+    } else if (state.errorType == SignUpError.invalidEmail) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context).showSnackBar(
+        _snackBar('Email inserido é inválido!'),
+      );
+    } else if (state.errorType == SignUpError.weakPassword) {
+      _teddyController.play('fail');
+      ScaffoldMessenger.of(context).showSnackBar(
+        _snackBar('Senha inserida muito fraca'),
+      );
+    } else if (state.userdId != null) {
+      _teddyController.play('success');
+      Future.delayed(Duration(seconds: 2)).whenComplete(
+        () => Navigator.of(context).pushReplacement(HomePage.route()),
+      );
+    }
+  }
 
   Widget _builder(BuildContext context, SignUpState state) {
+    _makeErrorTexts(state);
     return Material(
       child: SafeArea(
         child: Scaffold(
@@ -74,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               children: [
                 _makeTeddyAnimation(),
                 _makeTextSignUpFields(),
-                _makeLoginButton(),
+                _makeSignUpButton(state),
                 _makeBackButton(),
               ],
             ),
@@ -82,6 +116,28 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  void _makeErrorTexts(SignUpState state) {
+    if (state.errorType == SignUpError.emptyEmail) {
+      _emailErrorText = 'Ops! Parece que você esqueceu de inserir o email!';
+    } else {
+      _emailErrorText = null;
+    }
+
+    if (state.errorType == SignUpError.emptyConfirmEmail) {
+      _emailConfirmErrorText = 'Ops! Você precisa confirmar o email!';
+    } else if (state.errorType == SignUpError.fieldsDoestMatch) {
+      _emailConfirmErrorText = 'Opa! Os emails não conferem!';
+    } else {
+      _emailConfirmErrorText = null;
+    }
+
+    if (state.errorType == SignUpError.emptyPassword) {
+      _passwordErrorText = 'Ops! Parece que você esqueceu de inserir a senha';
+    } else {
+      _passwordErrorText = null;
+    }
   }
 
   Padding _makeTeddyAnimation() => Padding(
@@ -100,6 +156,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   'assets/Teddy.flr',
                   alignment: Alignment.center,
                   fit: BoxFit.contain,
+                  controller: _teddyController,
                   animation: this._animationType,
                   callback: (currentAnimation) {
                     setState(() {
@@ -133,7 +190,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextFormField(
-                  decoration: InputDecoration(hintText: 'digite seu email'),
+                  decoration: InputDecoration(
+                    hintText: 'digite seu email',
+                    errorText: _emailErrorText,
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   focusNode: _emailNode,
@@ -142,7 +202,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: TextFormField(
-                  decoration: InputDecoration(hintText: 'confirme seu email'),
+                  decoration: InputDecoration(
+                    hintText: 'confirme seu email',
+                    errorText: _emailConfirmErrorText,
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailConfirmController,
                   focusNode: _emailConfirmNode,
@@ -152,7 +215,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 padding: const EdgeInsets.all(12.0),
                 child: TextFormField(
                   keyboardType: TextInputType.name,
-                  decoration: InputDecoration(hintText: 'senha'),
+                  decoration: InputDecoration(
+                    hintText: 'senha',
+                    errorText: _passwordErrorText,
+                  ),
                   controller: _passwordController,
                   focusNode: _passwordNode,
                   obscureText: true,
@@ -163,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
         ),
       );
 
-  Container _makeLoginButton() => Container(
+  Container _makeSignUpButton(SignUpState state) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 25.0),
         width: double.infinity,
         child: ElevatedButton(
@@ -173,13 +239,24 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
-          onPressed: () => cubit.onSignUp(
-            email: _emailConfirmController.text,
-            password: _passwordController.text,
-          ),
-          child: Text(
-            'REGISTRAR',
-          ),
+          onPressed: () {
+            _emailConfirmNode.unfocus();
+            _emailNode.unfocus();
+            _passwordNode.unfocus();
+            cubit.onValidateFields(
+              email: _emailController.text,
+              confirmEmail: _emailConfirmController.text,
+              password: _passwordController.text,
+            );
+          },
+          child: state.isLoading
+              ? SpinKitThreeBounce(
+                  color: Colors.white,
+                  size: 25.0,
+                )
+              : Text(
+                  'REGISTRAR',
+                ),
         ),
       );
 
@@ -197,7 +274,9 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pushReplacement(
+            LoginPage.route(),
+          ),
           child: Text(
             'VOLTAR',
             style: TextStyle(
@@ -206,4 +285,12 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
           ),
         ),
       );
+
+  SnackBar _snackBar(String message) {
+    return SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+      elevation: 2.0,
+    );
+  }
 }

@@ -1,15 +1,22 @@
 enum SignUpError {
   none,
+  emptyEmail,
+  emptyConfirmEmail,
+  emptyPassword,
+  fieldsDoestMatch,
+  invalidEmail,
+  emailInUse,
+  weakPassword,
 }
 
 class SignUpState {
   SignUpState({
-    this.isLoading,
-    this.userdId,
+    required this.isLoading,
+    required this.userdId,
     this.errorType,
   });
 
-  final bool? isLoading;
+  final bool isLoading;
   final String? userdId;
   final SignUpError? errorType;
 
@@ -20,7 +27,7 @@ class SignUpState {
       );
 
   factory SignUpState.loading() => SignUpState(
-        isLoading: false,
+        isLoading: true,
         userdId: null,
         errorType: SignUpError.none,
       );
