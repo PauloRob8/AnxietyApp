@@ -16,4 +16,11 @@ class HasuraConnector {
       'user_id': userId,
     });
   }
+
+  Future<dynamic> query(
+    String docQuery, {
+    Map<String, dynamic>? variables,
+  }) async {
+    return _connection.query(docQuery, variables: variables);
+  }
 }

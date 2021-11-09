@@ -1,5 +1,7 @@
+import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_state.dart';
+import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:anxiety_app/pages/diary/diary_page.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -11,9 +13,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class HomePage extends StatefulWidget {
   const HomePage() : super();
 
-  static PageRoute<dynamic> route() => MaterialPageRoute(
-        builder: (context) => BlocProvider<HomeCubit>(
-          create: (context) => HomeCubit(),
+  static PageRoute<dynamic> route({
+    required String? userId,
+  }) =>
+      MaterialPageRoute(
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<HomeCubit>(
+              create: (context) => HomeCubit(),
+            ),
+            BlocProvider<DiaryCubit>(
+              create: (context) => DiaryCubit(
+                userId: userId,
+              ),
+            ),
+          ],
           child: HomePage(),
         ),
       );
@@ -26,6 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final _teddyController = TeddyController();
   late AnimationController _animationController;
 
+  LoginCubit get authCubit => context.read<LoginCubit>();
   HomeCubit get cubit => context.read<HomeCubit>();
 
   @override

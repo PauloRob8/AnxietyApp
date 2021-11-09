@@ -10,6 +10,7 @@ class LoginCubit extends Cubit<LoginState> {
         super(LoginState.initial());
 
   final AuthService _authService;
+  String? userId;
 
   void valiadeUserCredentials({
     required String email,
@@ -38,6 +39,8 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginState.loading());
     try {
       final user = await _authService.loginUser(email, password);
+
+      userId = user.user!.uid;
 
       emit(LoginState.success(userId: user.user!.uid));
     } on FirebaseAuthException catch (error) {

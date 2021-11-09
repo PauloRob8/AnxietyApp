@@ -66,7 +66,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     if (state.userdId != null) {
       _teddyController.play('success');
       Future.delayed(Duration(seconds: 2)).whenComplete(
-        () => Navigator.of(context).pushReplacement(HomePage.route()),
+        () => Navigator.of(context).pushReplacement(HomePage.route(
+          userId: state.userdId,
+        )),
       );
     } else if (state.errorType == LoginError.invalidEmail) {
       _teddyController.play('fail');

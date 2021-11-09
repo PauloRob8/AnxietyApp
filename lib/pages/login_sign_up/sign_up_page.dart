@@ -91,7 +91,9 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     } else if (state.userdId != null) {
       _teddyController.play('success');
       Future.delayed(Duration(seconds: 2)).whenComplete(
-        () => Navigator.of(context).pushReplacement(HomePage.route()),
+        () => Navigator.of(context).pushReplacement(HomePage.route(
+          userId: state.userdId,
+        )),
       );
     }
   }

@@ -10,7 +10,7 @@ enum LoginError {
 class LoginState {
   LoginState({
     required this.isLoading,
-    this.userdId,
+    required this.userdId,
     required this.errorType,
   });
 

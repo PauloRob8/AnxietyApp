@@ -2,6 +2,7 @@ import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'pages/login_sign_up/login_page.dart';
 
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          textTheme: GoogleFonts.ubuntuTextTheme(
+            Theme.of(context).textTheme,
+          ),
         ),
         home: MyHomePage(title: 'Flutter Demo Home Page'),
       ),
