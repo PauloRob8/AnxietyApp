@@ -34,6 +34,9 @@ dependencies:
   firebase_auth: ^3.1.4
   firebase_core: ^1.8.0
 
+  #Hasura
+  hasura_connect: ^3.0.6
+
   #Bloc
   flutter_bloc: ^7.0.0
   # Animation

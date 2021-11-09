@@ -1,14 +1,21 @@
+import 'package:anxiety_app/bloc/home/home_cubit.dart';
+import 'package:anxiety_app/bloc/home/home_state.dart';
+import 'package:anxiety_app/pages/diary/diary_page.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage() : super();
 
   static PageRoute<dynamic> route() => MaterialPageRoute(
-        builder: (context) => HomePage(),
+        builder: (context) => BlocProvider<HomeCubit>(
+          create: (context) => HomeCubit(),
+          child: HomePage(),
+        ),
       );
 
   @override
@@ -18,6 +25,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final _teddyController = TeddyController();
   late AnimationController _animationController;
+
+  HomeCubit get cubit => context.read<HomeCubit>();
+
   @override
   void initState() {
     _animationController = AnimationController(
@@ -32,65 +42,92 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.lightBlue,
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            elevation: 0,
-            backgroundColor: Colors.blue[50],
-            items: <BottomNavigationBarItem>[
-              buildBottomNavigationBarItem(
-                icon: Icons.history,
-                size: 30,
-                label: "Histórico",
-              ),
-              buildBottomNavigationBarItem(
-                icon: Icons.home,
-                size: 30,
-                label: "Início",
-              ),
-              buildBottomNavigationBarItem(
-                icon: Icons.book,
-                size: 30,
-                label: "Diário",
-              ),
-              buildBottomNavigationBarItem(
-                icon: FontAwesomeIcons.trophy,
-                label: "Conquistas",
-                size: 30,
-              ),
-            ],
-            currentIndex: 0,
-            onTap: null,
-          ),
-          body: Center(
-            child: Stack(
-              children: [
-                GestureDetector(
-                  onTap: () => _teddyController.play('success'),
-                  child: FlareActor(
-                    'assets/Teddy.flr',
-                    controller: _teddyController,
-                    shouldClip: false,
-                    callback: (name) {
-                      if (name != "fail") {
-                        _teddyController.play("success");
-                      }
-                    },
-                  ),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: _dialogCard(),
-                ),
-              ],
-            ),
-          ),
+        child: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) => _makeBody(state),
         ),
       ),
     );
+  }
+
+  Scaffold _makeBody(HomeState state) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.exit_to_app),
+            )
+          ],
+        ),
+        backgroundColor: Colors.lightBlue,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          backgroundColor: Colors.lightBlueAccent[100],
+          items: <BottomNavigationBarItem>[
+            buildBottomNavigationBarItem(
+              icon: Icons.history,
+              size: 30,
+              label: "Histórico",
+            ),
+            buildBottomNavigationBarItem(
+              icon: Icons.home,
+              size: 30,
+              label: "Início",
+            ),
+            buildBottomNavigationBarItem(
+              icon: Icons.book,
+              size: 30,
+              label: "Diário",
+            ),
+            buildBottomNavigationBarItem(
+              icon: FontAwesomeIcons.trophy,
+              label: "Conquistas",
+              size: 30,
+            ),
+          ],
+          currentIndex: state.page,
+          onTap: cubit.changePage,
+        ),
+        body: _getPage(state),
+      );
+
+  Widget _getPage(HomeState state) {
+    switch (state.page) {
+      case 1:
+        return Center(
+          child: Stack(
+            children: [
+              GestureDetector(
+                onTap: () => _teddyController.play('success'),
+                child: FlareActor(
+                  'assets/Teddy.flr',
+                  controller: _teddyController,
+                  shouldClip: false,
+                  callback: (name) {
+                    if (name != "fail") {
+                      _teddyController.play("success");
+                    }
+                  },
+                ),
+              ),
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: _dialogCard(),
+              ),
+            ],
+          ),
+        );
+
+      case 2:
+        return DiaryPage();
+
+      default:
+        return SizedBox();
+    }
   }
 
   Widget _dialogCard() => SlideTransition(
