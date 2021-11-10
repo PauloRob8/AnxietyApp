@@ -23,4 +23,11 @@ class HasuraConnector {
   }) async {
     return _connection.query(docQuery, variables: variables);
   }
+
+  Future<dynamic> mutation(
+    String docQuery, {
+    Map<String, dynamic>? variables,
+  }) async {
+    return _connection.mutation(docQuery, variables: variables);
+  }
 }

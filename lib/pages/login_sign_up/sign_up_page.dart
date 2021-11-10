@@ -194,6 +194,9 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 child: TextFormField(
                   decoration: InputDecoration(
                     hintText: 'digite seu email',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                    ),
                     errorText: _emailErrorText,
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -206,6 +209,9 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 child: TextFormField(
                   decoration: InputDecoration(
                     hintText: 'confirme seu email',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                    ),
                     errorText: _emailConfirmErrorText,
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -219,6 +225,9 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                     hintText: 'senha',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                    ),
                     errorText: _passwordErrorText,
                   ),
                   controller: _passwordController,

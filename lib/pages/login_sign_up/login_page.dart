@@ -174,6 +174,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: 'seu.email@gmail.com',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
                       errorText: _emailErrorText,
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -187,6 +190,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       hintText: 'senha',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
                       errorText: _passwordErrorText,
                     ),
                     controller: _passwordController,
