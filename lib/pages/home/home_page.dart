@@ -3,6 +3,8 @@ import 'package:anxiety_app/bloc/home/home_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_state.dart';
 import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:anxiety_app/pages/diary/diary_page.dart';
+import 'package:anxiety_app/widgets/dialog_cards/anxious_card_widget.dart';
+import 'package:anxiety_app/widgets/dialog_cards/calm_card_widget.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         return Center(
           child: Stack(
             children: [
+              state.dialogCard == DialogCard.anxiousCard
+                  ? _anxietyBar()
+                  : SizedBox(),
               GestureDetector(
                 onTap: () => _teddyController.play('success'),
                 child: FlareActor(
@@ -132,7 +137,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 bottom: 0.0,
                 left: 0.0,
                 right: 0.0,
-                child: _dialogCard(),
+                child: _dialogCard(state),
               ),
             ],
           ),
@@ -146,42 +151,112 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  Widget _dialogCard() => SlideTransition(
+  Widget _anxietyBar() => Padding(
+        padding: const EdgeInsets.only(
+          top: 50.0,
+        ),
+        child: Column(
+          children: [
+            AnimatedContainer(
+              height: 80.0,
+              width: double.infinity,
+              color: Colors.blue[900],
+              duration: Duration(seconds: 1),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('FINALIZAR'),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _dialogCard(HomeState state) => SlideTransition(
         position: Tween<Offset>(
           begin: Offset(-1, 0),
           end: Offset.zero,
         ).animate(_animationController),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 200.0,
-            decoration: BoxDecoration(
-              color: Colors.blue[200],
-              borderRadius: BorderRadius.circular(25.0),
-              border: Border.all(
-                width: 2.0,
-                color: Colors.white,
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.blue,
-                  Colors.blueGrey,
-                ],
-              ),
+        child: _getDialogCard(state),
+      );
+
+  Widget _getDialogCard(HomeState state) {
+    switch (state.dialogCard) {
+      case DialogCard.calmCard:
+        return CalmCardWidget(
+          cubit: cubit,
+        );
+
+      case DialogCard.anxiousCard:
+        return AnxiousCardWidget(cubit: cubit);
+      default:
+        return _makeFirstDialog();
+    }
+  }
+
+  Widget _makeFirstDialog() => Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 220.0,
+          decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+              width: 2.0,
+              color: Colors.blueGrey,
             ),
-            child: Center(
-              child: Text(
-                'Olá, como vai você ?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 50.0,
+                  horizontal: 30.0,
+                ),
+                child: Text(
+                  'Olá eu sou o Teddy ! Como você está se sentindo agora ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                  ),
                 ),
               ),
-            ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _teddyController.play('success');
+                      cubit.onMeasureMood(DialogCard.calmCard);
+                    },
+                    child: Text('CALMO'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _teddyController.play('fail');
+                      cubit.onMeasureMood(DialogCard.anxiousCard);
+                    },
+                    child: Text('ANSIOSO'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       );

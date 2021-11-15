@@ -8,4 +8,13 @@ class HomeCubit extends Cubit<HomeState> {
   void changePage(int page) {
     emit(HomeState.changePage(page: page));
   }
+
+  void onMeasureMood(DialogCard dialogCard) {
+    emit(
+      HomeState.measureMood(
+        page: state.page,
+        dialogCard: dialogCard,
+      ),
+    );
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:anxiety_app/bloc/login/login_state.dart';
-import 'package:anxiety_app/pages/home_page.dart';
+import 'package:anxiety_app/pages/home/home_page.dart';
 import 'package:anxiety_app/pages/login_sign_up/sign_up_page.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';

@@ -70,7 +70,7 @@ class _DiaryPageState extends State<DiaryPage> {
               ),
               state.diaries.isEmpty
                   ? _makeBodyWithoutData()
-                  : _makeDiariesList(state),
+                  : _makeBodyWithoutData(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Align(
@@ -159,10 +159,17 @@ class _DiaryPageState extends State<DiaryPage> {
     return Expanded(
       child: Column(
         children: [
-          Image.asset(
-            'assets/images/book_icon_01.png',
-            width: 250.0,
-            height: 250.0,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 40.0,
+              top: 50.0,
+              bottom: 40.0,
+            ),
+            child: Image.asset(
+              'assets/images/notepad_icon.png',
+              width: 200.0,
+              height: 200.0,
+            ),
           ),
           Text(
             'Bem-vindo(a) a sessão de diário! \n\nAqui é seu espaço pessoal '
