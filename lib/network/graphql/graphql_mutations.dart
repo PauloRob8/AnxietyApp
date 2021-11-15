@@ -27,4 +27,15 @@ mutation MyMutation(\$email: String!, \$user_id: String!) {
 }
 
 ''';
+
+  static const deleteDiary = ''''
+mutation MyMutation(\$id: uuid!) {
+  delete_diary(where: {id: {_eq: \$id}}) {
+    returning {
+      user_id
+    }
+  }
+}
+
+''';
 }

@@ -1,5 +1,6 @@
 import 'package:anxiety_app/bloc/diary/add_diary/add_diary_cubit.dart';
 import 'package:anxiety_app/bloc/diary/add_diary/add_diary_state.dart';
+import 'package:anxiety_app/widgets/alert_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -54,11 +55,16 @@ class _AddDiaryState extends State<AddDiaryPage> {
         ),
       );
 
-  void _listener(BuildContext context, AddDiaryState state) {
+  void _listener(BuildContext context, AddDiaryState state) async {
     if (state.added) {
-      showDialog(
+      await showDialog(
         context: context,
-        builder: (context) => Text('DIÁRIO ADICIONADO COM SUCESSO!'),
+        builder: (context) => AlertWidget(
+          dialogType: DialogType.confirm,
+          message: 'ANOTAÇÃO ADICIONADA COM SUCESSO AO SEU DIÁRIO !',
+        ),
+      ).whenComplete(
+        () => Navigator.of(context).pop(),
       );
     }
   }

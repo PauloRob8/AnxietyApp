@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
+        top: false,
         child: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) => _makeBody(state),
         ),
