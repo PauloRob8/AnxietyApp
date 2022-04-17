@@ -2,13 +2,14 @@ import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_state.dart';
 import 'package:anxiety_app/bloc/login/login_cubit.dart';
+import 'package:anxiety_app/pages/achievements/achievements_page.dart';
 import 'package:anxiety_app/pages/diary/diary_page.dart';
+import 'package:anxiety_app/pages/history/historys_page.dart';
 import 'package:anxiety_app/widgets/dialog_cards/anxious_card_widget.dart';
 import 'package:anxiety_app/widgets/dialog_cards/calm_card_widget.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -88,6 +89,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               icon: Icons.history,
               size: 30,
               label: "Histórico",
+              color: Colors.brown,
             ),
             buildBottomNavigationBarItem(
               icon: Icons.home,
@@ -98,11 +100,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               icon: Icons.book,
               size: 30,
               label: "Diário",
+              color: Colors.green,
             ),
             buildBottomNavigationBarItem(
               icon: FontAwesomeIcons.trophy,
               label: "Conquistas",
               size: 30,
+              color: Colors.yellow,
             ),
           ],
           currentIndex: state.page,
@@ -113,6 +117,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _getPage(HomeState state) {
     switch (state.page) {
+      case 0:
+        return HistorysPage();
       case 1:
         return Center(
           child: Stack(
@@ -145,6 +151,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       case 2:
         return DiaryPage();
+
+      case 3:
+        return AchievementsPage();
 
       default:
         return SizedBox();
@@ -222,6 +231,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
+                    fontFamily: 'Overlock',
                   ),
                 ),
               ),
@@ -270,6 +280,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return BottomNavigationBarItem(
       icon: Icon(
         icon,
+        color: Colors.black,
       ),
       label: label,
       activeIcon: Icon(

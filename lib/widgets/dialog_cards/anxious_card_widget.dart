@@ -1,5 +1,4 @@
 import 'package:anxiety_app/bloc/home/home_cubit.dart';
-import 'package:anxiety_app/bloc/home/home_state.dart';
 import 'package:flutter/material.dart';
 
 class AnxiousCardWidget extends StatelessWidget {

@@ -5,7 +5,6 @@ import 'package:anxiety_app/pages/login_sign_up/sign_up_page.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

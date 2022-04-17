@@ -1,8 +1,6 @@
 import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
 import 'package:anxiety_app/bloc/diary/diary_state.dart';
 import 'package:anxiety_app/pages/diary/add_diary_page.dart';
-import 'package:anxiety_app/pages/diary/diary_detail_page.dart';
-import 'package:anxiety_app/widgets/alert_dialog_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -70,7 +68,7 @@ class _DiaryPageState extends State<DiaryPage> {
               ),
               state.diaries.isEmpty
                   ? _makeBodyWithoutData()
-                  : _makeBodyWithoutData(),
+                  : _makeDiariesList(state),
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Align(
@@ -148,7 +146,7 @@ class _DiaryPageState extends State<DiaryPage> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.delete_rounded),
+                icon: Icon(Icons.more_vert),
                 onPressed: () {},
               ),
             ],
@@ -157,32 +155,34 @@ class _DiaryPageState extends State<DiaryPage> {
       );
   Widget _makeBodyWithoutData() {
     return Expanded(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 40.0,
-              top: 50.0,
-              bottom: 40.0,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 40.0,
+                top: 50.0,
+                bottom: 40.0,
+              ),
+              child: Image.asset(
+                'assets/images/notepad_icon.png',
+                width: 200.0,
+                height: 200.0,
+              ),
             ),
-            child: Image.asset(
-              'assets/images/notepad_icon.png',
-              width: 200.0,
-              height: 200.0,
+            Text(
+              'Bem-vindo(a) a sessão de diário! \n\nAqui é seu espaço pessoal '
+              'para escrever qualquer coisa que desejar, seja em um momento bom ou ruim, '
+              'se conhecer é um passo importantíssimo para o bem dá saúde mental. '
+              '\n\nClique no botão + para adicionar seu primeiro diário',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+              ),
             ),
-          ),
-          Text(
-            'Bem-vindo(a) a sessão de diário! \n\nAqui é seu espaço pessoal '
-            'para escrever qualquer coisa que desejar, seja em um momento bom ou ruim, '
-            'se conhecer é um passo importantíssimo para o bem dá saúde mental. '
-            '\n\nClique no botão + para adicionar seu primeiro diário',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18.0,
-              color: Colors.white,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
