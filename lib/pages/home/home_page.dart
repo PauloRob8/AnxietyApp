@@ -183,12 +183,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
-  Widget _dialogCard(HomeState state) => SlideTransition(
-        position: Tween<Offset>(
-          begin: Offset(-1, 0),
-          end: Offset.zero,
-        ).animate(_animationController),
-        child: _getDialogCard(state),
+  Widget _dialogCard(HomeState state) => AnimatedCrossFade(
+        firstChild: _getDialogCard(state),
+        secondChild: _getDialogCard(state),
+        crossFadeState: CrossFadeState.showFirst,
+        duration: Duration(
+          milliseconds: 300,
+        ),
       );
 
   Widget _getDialogCard(HomeState state) {

@@ -35,6 +35,7 @@ class CalmCardWidget extends StatelessWidget {
                   'sobre o que lhe fez bem hoje.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
+                    fontFamily: 'Overlock',
                     color: Colors.black,
                     fontSize: 16.0,
                   ),

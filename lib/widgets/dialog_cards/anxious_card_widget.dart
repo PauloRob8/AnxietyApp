@@ -34,6 +34,7 @@ class AnxiousCardWidget extends StatelessWidget {
                   '\n\nAumenta-a e depois a diminua-a quando estiver se sentindo mais calmo.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
+                    fontFamily: 'Overlock',
                     color: Colors.black,
                     fontSize: 16.0,
                   ),
