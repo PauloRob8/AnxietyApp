@@ -120,33 +120,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       case 0:
         return HistorysPage();
       case 1:
-        return Center(
-          child: Stack(
-            children: [
-              state.dialogCard == DialogCard.anxiousCard
-                  ? _anxietyBar()
-                  : SizedBox(),
-              GestureDetector(
-                onTap: () => _teddyController.play('success'),
-                child: FlareActor(
-                  'assets/Teddy.flr',
-                  controller: _teddyController,
-                  shouldClip: false,
-                  callback: (name) {
-                    if (name != "fail") {
-                      _teddyController.play("success");
-                    }
-                  },
-                ),
+        return Column(
+          children: [
+            state.dialogCard == DialogCard.anxiousCard
+                ? _anxietyBar(state)
+                : SizedBox(),
+            Expanded(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 90.0),
+                    child: GestureDetector(
+                      onTap: () => _teddyController.play('success'),
+                      child: FlareActor(
+                        'assets/Teddy.flr',
+                        controller: _teddyController,
+                        shouldClip: false,
+                        callback: (name) {
+                          if (name != "fail") {
+                            _teddyController.play("success");
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: _dialogCard(state),
+                  ),
+                ],
               ),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: _dialogCard(state),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
 
       case 2:
@@ -160,20 +168,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  Widget _anxietyBar() => Padding(
+  Widget _anxietyBar(HomeState state) => Padding(
         padding: const EdgeInsets.only(
-          top: 50.0,
+          top: 20.0,
         ),
         child: Column(
           children: [
             AnimatedContainer(
               height: 80.0,
-              width: double.infinity,
-              color: Colors.blue[900],
-              duration: Duration(seconds: 1),
+              width: state.anxietyBarWidth,
+              duration: Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: Colors.blue[900],
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(width: 2, color: Colors.white),
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
                 onPressed: () {},
                 child: Text('FINALIZAR'),
@@ -242,7 +254,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ElevatedButton(
                     onPressed: () {
                       _teddyController.play('success');
-                      cubit.onMeasureMood(DialogCard.calmCard);
+                      cubit.onChooseMood(DialogCard.calmCard);
                     },
                     child: Text('CALMO'),
                     style: ElevatedButton.styleFrom(
@@ -255,7 +267,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ElevatedButton(
                     onPressed: () {
                       _teddyController.play('fail');
-                      cubit.onMeasureMood(DialogCard.anxiousCard);
+                      cubit.onChooseMood(DialogCard.anxiousCard);
                     },
                     child: Text('ANSIOSO'),
                     style: ElevatedButton.styleFrom(

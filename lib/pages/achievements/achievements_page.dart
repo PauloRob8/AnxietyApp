@@ -16,7 +16,7 @@ class _AchievementsState extends State<AchievementsPage> {
       description: 'Logue no App pela primeira vez.',
       unlocked: true,
       date: '',
-      imagePath: 'assets/images/adventureIcon02.png',
+      imagePath: 'assets/images/adventureIcon.png',
     ),
     AchievementModel(
       title: 'Tranquilidade',
@@ -26,11 +26,11 @@ class _AchievementsState extends State<AchievementsPage> {
       imagePath: 'assets/images/relief_icon.jpeg',
     ),
     AchievementModel(
-      title: 'Perseverança',
+      title: 'Engajado',
       description: 'Use o App 7 dias seguidos.',
       unlocked: false,
       date: '',
-      imagePath: 'assets/images/calmIcon.png',
+      imagePath: 'assets/images/rewardIcon.png',
     ),
     AchievementModel(
       title: 'Escritor',

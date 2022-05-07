@@ -25,8 +25,8 @@ class AnxiousCardWidget extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 50.0,
-                  horizontal: 30.0,
+                  vertical: 30.0,
+                  horizontal: 15.0,
                 ),
                 child: Text(
                   'O importante agora é fazer você se sentir melhor ! '
@@ -40,30 +40,33 @@ class AnxiousCardWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text('DIMINUIR'),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => cubit.onMeasureMood(-10.0),
+                      child: Text('DIMINUIR'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text('AUMENTAR'),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                    ElevatedButton(
+                      onPressed: () => cubit.onMeasureMood(10.0),
+                      child: Text('AUMENTAR'),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               )
             ],
           ),

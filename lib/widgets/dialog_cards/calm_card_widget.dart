@@ -55,7 +55,7 @@ class CalmCardWidget extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () => cubit.onMeasureMood(
+                    onPressed: () => cubit.onChooseMood(
                       DialogCard.initialCard,
                     ),
                     child: Text('VOLTAR'),
