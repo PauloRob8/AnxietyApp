@@ -2,8 +2,8 @@ import 'package:anxiety_app/bloc/home/home_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_state.dart';
 import 'package:flutter/material.dart';
 
-class CalmCardWidget extends StatelessWidget {
-  const CalmCardWidget({
+class FinishedCardWidget extends StatelessWidget {
+  const FinishedCardWidget({
     required this.cubit,
   }) : super();
 
@@ -30,9 +30,9 @@ class CalmCardWidget extends StatelessWidget {
                   horizontal: 30.0,
                 ),
                 child: Text(
-                  'Oba ! Fico muito feliz em saber que você está bem ! '
+                  'Espero que você esteja se sentindo bem agora ! '
                   'Você pode acessar a aba de diários caso queira me contar '
-                  'sobre o que lhe fez bem hoje.',
+                  'sobre o que lhe deixou ansioso.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Overlock',

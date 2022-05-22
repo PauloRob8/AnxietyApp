@@ -99,9 +99,7 @@ class _AddDiaryState extends State<AddDiaryPage> {
             ),
           ),
           _makeTitleTextField(),
-          Expanded(
-            child: _makeDiaryTextField(),
-          ),
+          _makeDiaryTextField(),
           _makeButton(state),
         ],
       );
@@ -127,7 +125,7 @@ class _AddDiaryState extends State<AddDiaryPage> {
               controller: _titleController,
               focusNode: _titleNode,
               decoration: InputDecoration(
-                hintText: 'meu diário',
+                hintText: 'Meu diário',
                 hintStyle: TextStyle(
                   color: Colors.grey,
                 ),

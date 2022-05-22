@@ -7,6 +7,7 @@ import 'package:anxiety_app/pages/diary/diary_page.dart';
 import 'package:anxiety_app/pages/history/historys_page.dart';
 import 'package:anxiety_app/widgets/dialog_cards/anxious_card_widget.dart';
 import 'package:anxiety_app/widgets/dialog_cards/calm_card_widget.dart';
+import 'package:anxiety_app/widgets/dialog_cards/finished_card_widget.dart';
 import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -175,19 +176,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Column(
           children: [
             AnimatedContainer(
-              height: 80.0,
+              height: 60.0,
               width: state.anxietyBarWidth,
               duration: Duration(milliseconds: 200),
               decoration: BoxDecoration(
-                color: Colors.blue[900],
-                borderRadius: BorderRadius.circular(20),
+                color: Colors.blue[600],
+                borderRadius: BorderRadius.circular(15),
                 border: Border.all(width: 2, color: Colors.white),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => cubit.onChooseMood(
+                  DialogCard.finishedMeasure,
+                ),
                 child: Text('FINALIZAR'),
               ),
             ),
@@ -213,6 +216,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       case DialogCard.anxiousCard:
         return AnxiousCardWidget(cubit: cubit);
+
+      case DialogCard.finishedMeasure:
+        return FinishedCardWidget(
+          cubit: cubit,
+        );
       default:
         return _makeFirstDialog();
     }

@@ -13,9 +13,11 @@ class HomeCubit extends Cubit<HomeState> {
     Colors.blue[400],
     Colors.blue[500],
     Colors.blue[600],
-    Colors.blue[700],
-    Colors.blue[800],
+    Colors.red[100],
+    Colors.red[200],
     Colors.red[400],
+    Colors.red,
+    Colors.red[600],
   ];
 
   void changePage(int page) {
@@ -47,4 +49,6 @@ class HomeCubit extends Cubit<HomeState> {
       ),
     );
   }
+
+  void _updateColor() {}
 }

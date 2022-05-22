@@ -166,8 +166,8 @@ class _DiaryPageState extends State<DiaryPage> {
               ),
               child: Image.asset(
                 'assets/images/notepad_icon.png',
-                width: 200.0,
-                height: 200.0,
+                width: 140.0,
+                height: 140.0,
               ),
             ),
             Text(
