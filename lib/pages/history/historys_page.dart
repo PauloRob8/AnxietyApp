@@ -1,4 +1,9 @@
+import 'package:anxiety_app/bloc/history/history_cubit.dart';
+import 'package:anxiety_app/bloc/history/history_state.dart';
+import 'package:anxiety_app/models/history_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HistorysPage extends StatefulWidget {
@@ -9,22 +14,33 @@ class HistorysPage extends StatefulWidget {
 }
 
 class _HistorysState extends State<HistorysPage> {
+  HistoryCubit get cubit => context.read<HistoryCubit>();
+
   @override
   void initState() {
     super.initState();
 
-    //
+    cubit.getUserHistory();
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  Widget build(BuildContext context) => BlocBuilder<HistoryCubit, HistoryState>(
+        bloc: cubit,
+        builder: _builder,
+      );
 
-    //
+  Widget _builder(BuildContext context, HistoryState state) {
+    if (state.isLoading) {
+      return Center(
+        child: SpinKitThreeBounce(
+          color: Colors.white,
+        ),
+      );
+    }
+    return _makeBody(state);
   }
 
-  @override
-  Widget build(BuildContext context) => Material(
+  Widget _makeBody(HistoryState state) => Material(
         color: Colors.transparent,
         child: SafeArea(
           child: Container(
@@ -47,37 +63,56 @@ class _HistorysState extends State<HistorysPage> {
                 const SizedBox(
                   height: 15.0,
                 ),
-                _makeHistoryList(),
+                if (state.histories.isEmpty)
+                  _makeEmptyHistories()
+                else
+                  _makeHistoryList(state),
               ],
             ),
           ),
         ),
       );
 
-  Widget _makeHistoryList() => ListView.builder(
-        shrinkWrap: true,
-        itemCount: 5,
-        itemBuilder: (context, index) => _makeHistoryCard(),
+  Widget _makeEmptyHistories() => Center(
+        child: Text('Aqui ficará seu historico de interações com o aplicativo'),
       );
 
-  Widget _makeHistoryCard() => Padding(
+  Widget _makeHistoryList(HistoryState state) => ListView.builder(
+        shrinkWrap: true,
+        itemCount: state.histories.length,
+        itemBuilder: (context, index) => _makeHistoryCard(
+          state.histories[index],
+        ),
+      );
+
+  Widget _makeHistoryCard(
+    HistoryModel history,
+  ) =>
+      Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          child: ListTile(
-            leading: Icon(
-              FontAwesomeIcons.heartbeat,
-              color: Colors.red,
-            ),
-            title: Text(
-              'Normal',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(
+                  FontAwesomeIcons.heartbeat,
+                  color: Colors.red,
+                ),
+                title: Text(
+                  'Clicks: Ansioso ${history.anxiousTaps}x '
+                  'Calmo ${history.calmTaps}x',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                    fontFamily: 'Overlock',
+                  ),
+                ),
+                subtitle: Text(history.date),
               ),
-            ),
-            subtitle: Text('13/04/2022'),
+            ],
           ),
         ),
       );
