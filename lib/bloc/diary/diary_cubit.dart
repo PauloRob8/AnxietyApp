@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:anxiety_app/bloc/diary/diary_state.dart';
 import 'package:anxiety_app/models/diary_model.dart';
 import 'package:anxiety_app/network/graphql/graphql_queries.dart';
@@ -25,7 +27,7 @@ class DiaryCubit extends Cubit<DiaryState> {
 
       emit(DiaryState.fetched(diaries: diaries));
     } on Exception catch (error) {
-      print(error);
+      log(error.toString());
     }
   }
 }

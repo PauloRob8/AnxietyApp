@@ -87,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       ScaffoldMessenger.of(context).showSnackBar(
         _snackBar('Senha inserida muito fraca'),
       );
-    } else if (state.userdId != null) {
+    } else if (state.userdId.isNotEmpty) {
       _teddyController.play('success');
       Future.delayed(Duration(seconds: 2)).whenComplete(
         () => Navigator.of(context).pushReplacement(HomePage.route(

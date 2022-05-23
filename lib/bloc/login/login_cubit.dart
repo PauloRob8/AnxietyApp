@@ -10,7 +10,7 @@ class LoginCubit extends Cubit<LoginState> {
         super(LoginState.initial());
 
   final AuthService _authService;
-  String? userId;
+  late String userId;
 
   void valiadeUserCredentials({
     required String email,

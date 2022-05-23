@@ -15,18 +15,18 @@ class LoginState {
   });
 
   final bool isLoading;
-  final String? userdId;
+  final String userdId;
   final LoginError errorType;
 
   factory LoginState.initial() => LoginState(
         isLoading: false,
-        userdId: null,
+        userdId: '',
         errorType: LoginError.none,
       );
 
   factory LoginState.loading() => LoginState(
         isLoading: true,
-        userdId: null,
+        userdId: '',
         errorType: LoginError.none,
       );
 
@@ -44,7 +44,7 @@ class LoginState {
   }) =>
       LoginState(
         isLoading: false,
-        userdId: null,
+        userdId: '',
         errorType: errorType,
       );
 }

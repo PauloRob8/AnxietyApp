@@ -1,4 +1,5 @@
 import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
+import 'package:anxiety_app/bloc/history/history_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_state.dart';
 import 'package:anxiety_app/bloc/login/login_cubit.dart';
@@ -18,16 +19,23 @@ class HomePage extends StatefulWidget {
   const HomePage() : super();
 
   static PageRoute<dynamic> route({
-    required String? userId,
+    required String userId,
   }) =>
       MaterialPageRoute(
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider<HomeCubit>(
-              create: (context) => HomeCubit(),
+              create: (context) => HomeCubit(
+                userId: userId,
+              ),
             ),
             BlocProvider<DiaryCubit>(
               create: (context) => DiaryCubit(
+                userId: userId,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => HistoryCubit(
                 userId: userId,
               ),
             ),

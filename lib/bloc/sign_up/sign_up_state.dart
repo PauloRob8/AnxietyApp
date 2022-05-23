@@ -17,18 +17,18 @@ class SignUpState {
   });
 
   final bool isLoading;
-  final String? userdId;
+  final String userdId;
   final SignUpError? errorType;
 
   factory SignUpState.initial() => SignUpState(
         isLoading: false,
-        userdId: null,
+        userdId: '',
         errorType: SignUpError.none,
       );
 
   factory SignUpState.loading() => SignUpState(
         isLoading: true,
-        userdId: null,
+        userdId: '',
         errorType: SignUpError.none,
       );
 
@@ -46,7 +46,7 @@ class SignUpState {
   }) =>
       SignUpState(
         isLoading: false,
-        userdId: null,
+        userdId: '',
         errorType: errorType,
       );
 }

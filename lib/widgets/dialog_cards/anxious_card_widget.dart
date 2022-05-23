@@ -46,7 +46,10 @@ class AnxiousCardWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () => cubit.onMeasureMood(-10.0),
+                      onPressed: () => cubit.onMeasureMood(
+                        value: -10.0,
+                        screenMaxWidth: MediaQuery.of(context).size.width,
+                      ),
                       child: Text('DIMINUIR'),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blue,
@@ -56,7 +59,10 @@ class AnxiousCardWidget extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () => cubit.onMeasureMood(10.0),
+                      onPressed: () => cubit.onMeasureMood(
+                        value: 10.0,
+                        screenMaxWidth: MediaQuery.of(context).size.width,
+                      ),
                       child: Text('AUMENTAR'),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.red,

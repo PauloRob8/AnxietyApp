@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   void _listener(BuildContext context, LoginState state) {
-    if (state.userdId != null) {
+    if (state.userdId.isNotEmpty) {
       _teddyController.play('success');
       Future.delayed(Duration(seconds: 2)).whenComplete(
         () => Navigator.of(context).pushReplacement(HomePage.route(
