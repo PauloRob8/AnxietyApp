@@ -11,4 +11,16 @@ abstract class GraphQlQueries {
   }
 }
   ''';
+
+  static const getUserHistories = '''
+query getUserHistories(\$user_id: String!){
+  histories(where: {user_id: {_eq: \$user_id}}) {
+    anxiousTaps
+    calmTaps
+    date
+    id
+    user_id
+  }
+}
+''';
 }

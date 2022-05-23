@@ -38,4 +38,15 @@ mutation MyMutation(\$id: uuid!) {
 }
 
 ''';
+
+  //Mutation to add a history to a user
+  static const addHistory = '''
+mutation addHistory(\$calmTaps: Int!, \$anxiousTaps: Int!, \$user_id: String!){
+  insert_histories(objects: {calmTaps: \$calmTaps, anxiousTaps: \$anxiousTaps, user_id: \$user_id}){
+    returning{
+    id
+    }
+  }
+}
+''';
 }
