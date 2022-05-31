@@ -1,6 +1,5 @@
 import 'package:anxiety_app/models/diary_model.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DiaryDetailPage extends StatelessWidget {
   const DiaryDetailPage({
@@ -32,11 +31,11 @@ class DiaryDetailPage extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          body: _makeBody(),
+          body: _makeBody(context),
         ),
       );
 
-  Widget _makeBody() => Column(
+  Widget _makeBody(BuildContext context) => Column(
         children: [
           Center(
             child: Text(
@@ -46,6 +45,7 @@ class DiaryDetailPage extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 26.0,
+                fontFamily: 'Overlock',
               ),
             ),
           ),
@@ -72,10 +72,33 @@ class DiaryDetailPage extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
                       diary.description,
-                      style: GoogleFonts.mcLaren(),
+                      style: TextStyle(
+                        fontFamily: 'Overlock',
+                        fontSize: 16.0,
+                      ),
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 18.0,
+              left: 18.0,
+              bottom: 20.0,
+            ),
+            child: Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue[700],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('VOLTAR'),
               ),
             ),
           ),

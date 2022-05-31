@@ -7,14 +7,14 @@ class HistoryModel {
   });
 
   final String id;
-  final String date;
+  final DateTime date;
   final int anxiousTaps;
   final int calmTaps;
 
   factory HistoryModel.fromHasura(value) {
     return HistoryModel(
       id: value['id'] as String,
-      date: value['date'],
+      date: DateTime.parse(value['date']),
       anxiousTaps: value['anxiousTaps'] as int,
       calmTaps: value['calmTaps'] as int,
     );

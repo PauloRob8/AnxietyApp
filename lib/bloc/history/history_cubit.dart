@@ -24,6 +24,8 @@ class HistoryCubit extends Cubit<HistoryState> {
 
       final histories = HistoryModel.listFromHasura(data['data']['histories']);
 
+      histories.sort((a, b) => b.date.compareTo(a.date));
+
       emit(HistoryState.fetched(histories: histories));
     } on Exception catch (error) {
       log(error.toString());

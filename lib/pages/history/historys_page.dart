@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class HistorysPage extends StatefulWidget {
   const HistorysPage() : super();
@@ -20,27 +22,12 @@ class _HistorysState extends State<HistorysPage> {
   void initState() {
     super.initState();
 
+    initializeDateFormatting();
     cubit.getUserHistory();
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<HistoryCubit, HistoryState>(
-        bloc: cubit,
-        builder: _builder,
-      );
-
-  Widget _builder(BuildContext context, HistoryState state) {
-    if (state.isLoading) {
-      return Center(
-        child: SpinKitThreeBounce(
-          color: Colors.white,
-        ),
-      );
-    }
-    return _makeBody(state);
-  }
-
-  Widget _makeBody(HistoryState state) => Material(
+  Widget build(BuildContext context) => Material(
         color: Colors.transparent,
         child: SafeArea(
           child: Container(
@@ -63,25 +50,48 @@ class _HistorysState extends State<HistorysPage> {
                 const SizedBox(
                   height: 15.0,
                 ),
-                if (state.histories.isEmpty)
-                  _makeEmptyHistories()
-                else
-                  _makeHistoryList(state),
+                BlocBuilder<HistoryCubit, HistoryState>(
+                  bloc: cubit,
+                  builder: _builder,
+                )
               ],
             ),
           ),
         ),
       );
 
+  Widget _builder(BuildContext context, HistoryState state) {
+    if (state.isLoading) {
+      return Expanded(
+        child: SpinKitSpinningLines(
+          size: 100.0,
+          color: Colors.white,
+        ),
+      );
+    } else if (state.histories.isEmpty) {
+      return _makeEmptyHistories();
+    }
+    return _makeHistoryList(state);
+  }
+
   Widget _makeEmptyHistories() => Center(
-        child: Text('Aqui ficará seu historico de interações com o aplicativo'),
+        child: Text(
+          'Aqui ficará seu historico de interações com o aplicativo.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18.0,
+            color: Colors.white,
+          ),
+        ),
       );
 
-  Widget _makeHistoryList(HistoryState state) => ListView.builder(
-        shrinkWrap: true,
-        itemCount: state.histories.length,
-        itemBuilder: (context, index) => _makeHistoryCard(
-          state.histories[index],
+  Widget _makeHistoryList(HistoryState state) => Expanded(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: state.histories.length,
+          itemBuilder: (context, index) => _makeHistoryCard(
+            state.histories[index],
+          ),
         ),
       );
 
@@ -102,25 +112,22 @@ class _HistorysState extends State<HistorysPage> {
                   color: Colors.red,
                 ),
                 title: Text(
-                  'Clicks: Ansioso ${history.anxiousTaps}x '
+                  'Clicks -> Ansioso ${history.anxiousTaps}x '
                   'Calmo ${history.calmTaps}x',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                     fontFamily: 'Overlock',
                   ),
                 ),
-                subtitle: Text(history.date),
+                subtitle: Text(
+                  DateFormat.yMd('pt_BR').add_Hm().format(
+                        history.date,
+                      ),
+                ),
               ),
             ],
           ),
         ),
       );
-
-  @override
-  void dispose() {
-    //
-
-    super.dispose();
-  }
 }

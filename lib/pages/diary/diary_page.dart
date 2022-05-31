@@ -1,6 +1,7 @@
 import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
 import 'package:anxiety_app/bloc/diary/diary_state.dart';
 import 'package:anxiety_app/pages/diary/add_diary_page.dart';
+import 'package:anxiety_app/pages/diary/diary_detail_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,29 +26,7 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<DiaryCubit, DiaryState>(
-      bloc: _cubit,
-      listener: _listener,
-      builder: _builder,
-    );
-  }
-
-  void _listener(BuildContext context, DiaryState state) {}
-
-  Widget _builder(BuildContext context, DiaryState state) {
-    if (state.isLoading) {
-      return Center(
-        child: SpinKitThreeBounce(
-          color: Colors.white,
-        ),
-      );
-    }
-
-    return _makeBody(state);
-  }
-
-  Widget _makeBody(DiaryState state) => Material(
+  Widget build(BuildContext context) => Material(
         color: Colors.transparent,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20),
@@ -60,15 +39,17 @@ class _DiaryPageState extends State<DiaryPage> {
                   color: Colors.white,
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Overlock',
                 ),
               ),
               Divider(
                 color: Colors.black,
                 endIndent: MediaQuery.of(context).size.width * 0.3,
               ),
-              state.diaries.isEmpty
-                  ? _makeBodyWithoutData()
-                  : _makeDiariesList(state),
+              BlocBuilder<DiaryCubit, DiaryState>(
+                bloc: _cubit,
+                builder: _builder,
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Align(
@@ -96,6 +77,20 @@ class _DiaryPageState extends State<DiaryPage> {
         ),
       );
 
+  Widget _builder(BuildContext context, DiaryState state) {
+    if (state.isLoading) {
+      return Expanded(
+        child: SpinKitSpinningLines(
+          size: 100.0,
+          color: Colors.white,
+        ),
+      );
+    } else if (state.diaries.isEmpty) {
+      return _makeBodyWithoutData();
+    }
+    return _makeDiariesList(state);
+  }
+
   Widget _makeDiariesList(DiaryState state) => Expanded(
         child: ListView.builder(
           shrinkWrap: true,
@@ -106,50 +101,57 @@ class _DiaryPageState extends State<DiaryPage> {
         ),
       );
 
-  Widget _makeDiaryCard(DiaryState state, int index) => Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 5.0,
-        ),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+  Widget _makeDiaryCard(DiaryState state, int index) => GestureDetector(
+        onTap: () => Navigator.of(context).push(
+          DiaryDetailPage.route(
+            diaryModel: state.diaries[index],
           ),
-          color: Colors.white,
-          elevation: 2.0,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  'assets/images/notepad_icon.png',
-                  width: 80.0,
-                  height: 80.0,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 5.0,
+          ),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            color: Colors.white,
+            elevation: 2.0,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    'assets/images/notepad_icon.png',
+                    width: 80.0,
+                    height: 80.0,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      state.diaries[index].title,
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      DateFormat.yMd('pt_BR').add_Hm().format(
-                            state.diaries[index].date,
-                          ),
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    SizedBox(height: 8)
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        state.diaries[index].title,
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        DateFormat.yMd('pt_BR').add_Hm().format(
+                              state.diaries[index].date,
+                            ),
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(height: 8)
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: Icon(Icons.more_vert),
-                onPressed: () {},
-              ),
-            ],
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
         ),
       );
