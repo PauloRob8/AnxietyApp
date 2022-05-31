@@ -23,4 +23,16 @@ query getUserHistories(\$user_id: String!){
   }
 }
 ''';
+
+  static String getUserXp({
+    required String userId,
+  }) =>
+      '''
+query getUserXp{
+  users_by_pk(user_id: "$userId") {
+    user_id
+    xp
+  }
+}
+''';
 }

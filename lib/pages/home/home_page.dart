@@ -1,3 +1,4 @@
+import 'package:anxiety_app/bloc/achievements/achievements_cubit.dart';
 import 'package:anxiety_app/bloc/diary/diary_cubit.dart';
 import 'package:anxiety_app/bloc/history/history_cubit.dart';
 import 'package:anxiety_app/bloc/home/home_cubit.dart';
@@ -6,6 +7,7 @@ import 'package:anxiety_app/bloc/login/login_cubit.dart';
 import 'package:anxiety_app/pages/achievements/achievements_page.dart';
 import 'package:anxiety_app/pages/diary/diary_page.dart';
 import 'package:anxiety_app/pages/history/historys_page.dart';
+import 'package:anxiety_app/widgets/achivements/achievement_view_widget.dart';
 import 'package:anxiety_app/widgets/dialog_cards/anxious_card_widget.dart';
 import 'package:anxiety_app/widgets/dialog_cards/calm_card_widget.dart';
 import 'package:anxiety_app/widgets/dialog_cards/finished_card_widget.dart';
@@ -13,6 +15,7 @@ import 'package:anxiety_app/widgets/teddy/teddy_controller.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,6 +39,11 @@ class HomePage extends StatefulWidget {
             ),
             BlocProvider(
               create: (context) => HistoryCubit(
+                userId: userId,
+              ),
+            ),
+            BlocProvider(
+              create: (context) => AchievementsCubit(
                 userId: userId,
               ),
             ),
@@ -70,11 +78,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Material(
       child: SafeArea(
         top: false,
-        child: BlocBuilder<HomeCubit, HomeState>(
+        child: BlocConsumer<HomeCubit, HomeState>(
+          listener: _listener,
           builder: (context, state) => _makeBody(state),
         ),
       ),
     );
+  }
+
+  void _listener(BuildContext context, HomeState state) {
+    if (state.finished) {
+      showAchievement(context, 'Oba !', '+ 100 XP');
+    }
   }
 
   Scaffold _makeBody(HomeState state) => Scaffold(
@@ -83,7 +98,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           elevation: 0,
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showAchievement(context, 'Oba !', '+ 100 XP');
+              },
               icon: Icon(Icons.exit_to_app),
             )
           ],
@@ -131,9 +148,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       case 1:
         return Column(
           children: [
-            state.dialogCard == DialogCard.anxiousCard
-                ? _anxietyBar(state)
-                : SizedBox(),
+            _anxietyBar(state),
             Expanded(
               child: Stack(
                 alignment: Alignment.center,
@@ -177,7 +192,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  Widget _anxietyBar(HomeState state) => Padding(
+  Widget _anxietyBar(HomeState state) {
+    if (state.isLoading) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+        ),
+      );
+    } else if (state.dialogCard == DialogCard.anxiousCard) {
+      return Padding(
         padding: const EdgeInsets.only(
           top: 20.0,
         ),
@@ -205,6 +229,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ],
         ),
       );
+    }
+    return SizedBox();
+  }
 
   Widget _dialogCard(HomeState state) => AnimatedCrossFade(
         firstChild: _getDialogCard(state),

@@ -1,6 +1,16 @@
 class UserModel {
-  UserModel(this.email, this.password);
+  UserModel({
+    required this.id,
+    required this.xp,
+  });
 
-  final String? email;
-  final String? password;
+  final String id;
+  final int xp;
+
+  factory UserModel.fromHasura(value) {
+    return UserModel(
+      id: value['user_id'] as String,
+      xp: value['xp'] as int,
+    );
+  }
 }

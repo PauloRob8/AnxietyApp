@@ -49,4 +49,15 @@ mutation addHistory(\$calmTaps: Int!, \$anxiousTaps: Int!, \$user_id: String!){
   }
 }
 ''';
+
+  //Mutation to increase user XP
+  static const increaseXp = '''
+mutation increaseXp(\$user_id: String!) {
+  update_users(where: {user_id: {_eq: \$user_id}}, _inc: {xp: 100}) {
+    returning {
+      user_id
+    }
+  }
+}
+''';
 }
