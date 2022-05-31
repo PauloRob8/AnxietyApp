@@ -1,5 +1,10 @@
+import 'package:anxiety_app/bloc/achievements/achievements_cubit.dart';
+import 'package:anxiety_app/bloc/achievements/achievements_state.dart';
 import 'package:anxiety_app/models/achievement_model.dart';
+import 'package:anxiety_app/widgets/achivements/achievement_view_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AchievementsPage extends StatefulWidget {
@@ -10,6 +15,9 @@ class AchievementsPage extends StatefulWidget {
 }
 
 class _AchievementsState extends State<AchievementsPage> {
+  AchievementsCubit get cubit => context.read<AchievementsCubit>();
+
+  //TODO: Remove this
   final list = [
     AchievementModel(
       title: 'O Inicio da jornada',
@@ -45,23 +53,34 @@ class _AchievementsState extends State<AchievementsPage> {
   void initState() {
     super.initState();
 
-    //
+    cubit.getXp();
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _makeHeader(),
-            Expanded(
-              child: _makeAchievementsList(),
-            ),
-          ],
+  Widget build(BuildContext context) =>
+      BlocConsumer<AchievementsCubit, AchievementsState>(
+        listener: _listener,
+        builder: (context, state) => SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _makeHeader(state),
+              Expanded(
+                child: _makeAchievementsList(),
+              ),
+            ],
+          ),
         ),
       );
 
-  Widget _makeHeader() => Container(
+  //TODO: fix this
+  void _listener(BuildContext context, AchievementsState state) {
+    if (state.lvledUp) {
+      showAchievement(context, 'Parabéns !!!', '+ 100 XP');
+    }
+  }
+
+  Widget _makeHeader(AchievementsState state) => Container(
         color: Colors.lightBlueAccent,
         child: Column(
           children: [
@@ -77,15 +96,7 @@ class _AchievementsState extends State<AchievementsPage> {
               ),
             ),
             const SizedBox(height: 20.0),
-            Text(
-              'LVL 1  0/100 XP',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontFamily: 'PressStart2P',
-                color: Colors.white,
-              ),
-            ),
+            _makeLvlText(state),
             Divider(
               indent: 25.0,
               endIndent: 25.0,
@@ -94,6 +105,24 @@ class _AchievementsState extends State<AchievementsPage> {
           ],
         ),
       );
+
+  Widget _makeLvlText(AchievementsState state) {
+    if (state.isLoading) {
+      return SpinKitWave(
+        size: 18.0,
+        color: Colors.white,
+      );
+    }
+    return Text(
+      'lvl ${cubit.currentLvl} ${state.user?.xp}/${cubit.xpForLvlUp}',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontFamily: 'PressStart2P',
+        color: Colors.white,
+      ),
+    );
+  }
 
   Widget _makeAchievementsList() => ListView.builder(
         itemBuilder: (context, index) => _makeAchievementCard(
@@ -204,11 +233,4 @@ class _AchievementsState extends State<AchievementsPage> {
           ),
         ),
       );
-
-  @override
-  void dispose() {
-    //
-
-    super.dispose();
-  }
 }
